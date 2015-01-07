@@ -1,16 +1,19 @@
-(function() {
+var mockService = require('./mockService');
+var interaction = require('./interaction');
 
-  // consumerName, providerName, port, pactDir
-  this.mockService = function(opts) {
-    return Pact.MockService.create(opts);
-  };
+var Pact = {};
 
-  this.givenInteraction = function(providerState) {
-    return Pact.Interaction.create().given(providerState);
-  };
+// consumerName, providerName, port, pactDir
+Pact.mockService = function(opts) {
+  return mockService.create(opts);
+};
 
-  this.receivingInteraction = function(description) {
-    return Pact.Interaction.create().uponReceiving(description);
-  };
+Pact.givenInteraction = function(providerState) {
+  return interaction.create().given(providerState);
+};
 
-}).apply(Pact);
+Pact.receivingInteraction = function(description) {
+  return interaction.create().uponReceiving(description);
+};
+
+module.exports = Pact;

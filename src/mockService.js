@@ -1,4 +1,7 @@
-Pact.MockService = Pact.MockService || {};
+var mockServiceRequests = require('./mockServiceRequests');
+var interaction = require('./interaction');
+
+var mockService = {};
 
 (function() {
 
@@ -22,7 +25,7 @@ Pact.MockService = Pact.MockService || {};
         return;
       }
 
-      Pact.MockServiceRequests.postInteraction(interactions[index], _baseURL, function(error) {
+      mockServiceRequests.postInteraction(interactions[index], _baseURL, function(error) {
         if (error) {
           callback(error);
           return;
@@ -34,7 +37,7 @@ Pact.MockService = Pact.MockService || {};
 
     var cleanAndSetup = function(callback) {
       // Cleanup the interactions from the previous test
-      Pact.MockServiceRequests.deleteInteractions(_baseURL, function(deleteInteractionsError) {
+      mockServiceRequests.deleteInteractions(_baseURL, function(deleteInteractionsError) {
         if (deleteInteractionsError) {
           callback(deleteInteractionsError);
           return;
@@ -49,14 +52,14 @@ Pact.MockService = Pact.MockService || {};
 
     var verifyAndWrite = function(callback) {
       //Verify that the expected interactions have occurred
-      Pact.MockServiceRequests.getVerification(_baseURL, function(verifyError) {
+      mockServiceRequests.getVerification(_baseURL, function(verifyError) {
         if (verifyError) {
           callback(verifyError);
           return;
         }
 
         //Write the pact file
-        Pact.MockServiceRequests.postPact(_pactDetails, _baseURL, callback);
+        mockServiceRequests.postPact(_pactDetails, _baseURL, callback);
       });
     };
 
@@ -67,15 +70,15 @@ Pact.MockService = Pact.MockService || {};
     };
 
     this.given = function(providerState) {
-      var interaction = Pact.givenInteraction(providerState);
-      _interactions.push(interaction);
-      return interaction;
+      var i = interaction.create().given(providerState);
+      _interactions.push(i);
+      return i;
     };
 
     this.uponReceiving = function(description) {
-      var interaction = Pact.receivingInteraction(description);
-      _interactions.push(interaction);
-      return interaction;
+      var i = interaction.create().uponReceiving(description);
+      _interactions.push(i);
+      return i;
     };
 
     this.run = function(testFunction) {
@@ -98,4 +101,6 @@ Pact.MockService = Pact.MockService || {};
     return new MockService(opts);
   };
 
-}).apply(Pact.MockService);
+}).apply(mockService);
+
+module.exports = mockService;

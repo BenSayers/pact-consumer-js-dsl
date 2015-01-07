@@ -1,9 +1,13 @@
 'use strict';
 
 var gulp = require('gulp'),
+  pkg = require('./package.json'),
   fs = require('fs-extra'),
   q = require('q'),
   request = require('request'),
+  browserify = require('browserify'),
+  source = require('vinyl-source-stream'),
+  buffer = require('vinyl-buffer'),
   spawn = require('child_process').spawn,
   $ = require('gulp-load-plugins')();
 
@@ -80,11 +84,21 @@ gulp.task('clean', ['clear'], function() {
   }).pipe($.clean());
 });
 
-gulp.task('build', ['clean'], function() {
-  return gulp.src(srcFiles)
+gulp.task('quality', function() {
+  return gulp.src('src/**/*.js')
     .pipe($.jshint())
-    .pipe($.jshint.reporter('default'))
-    .pipe($.concat('pact-consumer-js-dsl.js'))
+    .pipe($.jshint.reporter('default'));
+});
+
+gulp.task('build', ['clean', 'quality'], function() {
+  return browserify({
+      entries: ['./src/pact.js'],
+      plugin: require('bundle-collapser/plugin'),
+      standalone: 'Pact'
+    })
+    .bundle()
+    .pipe(source(pkg.name + '.js'))
+    .pipe(buffer())
     .pipe(gulp.dest('dist'))
     .pipe($.size());
 });
@@ -98,7 +112,7 @@ gulp.task('run-browser-tests', ['build'], function() {
 
 gulp.task('run-node-tests', ['build', 'run-browser-tests'], function() {
   return withServer(function() {
-    return gulp.src(distFiles.concat(specFiles))
+    return gulp.src(specFiles)
       .pipe($.jasmine());
   });
 });
