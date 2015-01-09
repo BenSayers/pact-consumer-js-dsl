@@ -1,8 +1,9 @@
-Pact.MockServiceRequests = Pact.MockServiceRequests || {};
+var mockServiceRequests = {};
+var makeRequest = require('./makeRequest');
 
 (function() {
   this.getVerification = function(baseUrl, callback) {
-    Pact.Http.makeRequest('GET', baseUrl + '/interactions/verification', null, function(error, response) {
+    makeRequest('GET', baseUrl + '/interactions/verification', null, function(error, response) {
       if (error) {
         callback(error);
       } else if (200 !== response.status) {
@@ -14,7 +15,7 @@ Pact.MockServiceRequests = Pact.MockServiceRequests || {};
   };
 
   this.deleteInteractions = function(baseUrl, callback) {
-    Pact.Http.makeRequest('DELETE', baseUrl + '/interactions', null, function(error, response) {
+    makeRequest('DELETE', baseUrl + '/interactions', null, function(error, response) {
       if (error) {
         callback(error);
       } else if (200 !== response.status) {
@@ -26,7 +27,7 @@ Pact.MockServiceRequests = Pact.MockServiceRequests || {};
   };
 
   this.postInteraction = function(interaction, baseUrl, callback) {
-    Pact.Http.makeRequest('POST', baseUrl + '/interactions', JSON.stringify(interaction), function(error, response) {
+    makeRequest('POST', baseUrl + '/interactions', JSON.stringify(interaction), function(error, response) {
       if (error) {
         callback(error);
       } else if (200 !== response.status) {
@@ -38,7 +39,7 @@ Pact.MockServiceRequests = Pact.MockServiceRequests || {};
   };
 
   this.postPact = function(pactDetails, baseUrl, callback) {
-    Pact.Http.makeRequest('POST', baseUrl + '/pact', JSON.stringify(pactDetails), function(error, response) {
+    makeRequest('POST', baseUrl + '/pact', JSON.stringify(pactDetails), function(error, response) {
       if (error) {
         callback(error);
       } else if (200 !== response.status) {
@@ -48,4 +49,6 @@ Pact.MockServiceRequests = Pact.MockServiceRequests || {};
       }
     });
   };
-}).apply(Pact.MockServiceRequests);
+}).apply(mockServiceRequests);
+
+module.exports = mockServiceRequests;

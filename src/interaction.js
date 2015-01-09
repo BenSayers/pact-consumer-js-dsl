@@ -1,4 +1,4 @@
-Pact.Interaction = Pact.Interaction || {};
+var interaction = {};
 
 (function() {
 
@@ -62,4 +62,6 @@ Pact.Interaction = Pact.Interaction || {};
     };
   };
 
-}).apply(Pact.Interaction);
+}).apply(interaction);
+
+module.exports = interaction;
