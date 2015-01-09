@@ -3,7 +3,9 @@
   "version": "0.0.4",
   "description": "DSL to write pact tests in Javascript",
   "main": "src/pact.js",
-  "dependencies": {},
+  "dependencies": {
+    "xhr2": "^0.1.0"
+  },
   "devDependencies": {
     "browserify": "^8.0.3",
     "bundle-collapser": "^1.1.1",
@@ -30,6 +32,9 @@
     "request": "^2.51.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0"
+  },
+  "browser": {
+    "xhr2": "./src/shims/xhr2.js"
   },
   "scripts": {
     "test": "gulp run-tests"
